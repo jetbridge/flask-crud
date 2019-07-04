@@ -62,6 +62,13 @@ class PetCollection(CollectionView):
     create_enabled = True
     list_enabled = True
 
+    _decorators = dict(
+        post=[
+            pet_blp.arguments(PetSchema),
+            pet_blp.response(PetSchema),
+        ],
+    )
+
     @pet_blp.response(PetSchemaLite(many=True))
     def get(self):
         query = super().get()
@@ -73,11 +80,6 @@ class PetCollection(CollectionView):
 
         return query
 
-    @pet_blp.arguments(PetSchema)
-    @pet_blp.response(PetSchema)
-    def post(self, args):
-        return super().post(args)
-
 
 @pet_blp.route("/<int:pk>")
 class PetResource(ResourceView):
@@ -87,18 +89,15 @@ class PetResource(ResourceView):
     update_enabled = True
     delete_enabled = True
 
-    @pet_blp.response(PetSchema)
-    def get(self, pk):
-        return super().get(pk)
-
-    @pet_blp.arguments(PetSchema)
-    @pet_blp.response(PetSchema)
-    def patch(self, args, pk):
-        return super().patch(args, pk)
-
-    @pet_blp.response(PetSchema)
-    def delete(self, pk):
-        return super().delete(pk)
+    # get_decorators = [pet_blp.response(PetSchema)]
+    _decorators = dict(
+        get=[pet_blp.response(PetSchema)],
+        patch=[
+            pet_blp.arguments(PetSchema),
+            pet_blp.response(PetSchema),
+        ],
+        delete=[pet_blp.response(PetSchema)],
+    )
 
 
 human_blp = Blueprint("humans", "humans", url_prefix="/human")
@@ -113,9 +112,9 @@ class HumanCollection(CollectionView):
 class HumanResource(ResourceView):
     model = Human
 
-    @human_blp.response(HumanSchema)
-    def get(self, pk):
-        return super().get(pk)
+    _decorators = dict(
+        get=[human_blp.response(HumanSchema)],
+    )
 
 
 pointless_blp = Blueprint(

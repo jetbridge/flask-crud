@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Dict, Callable, Collection
 from flask.views import MethodView
 from flask_rest_api import abort
 from flask_sqlalchemy import BaseQuery, Model, SQLAlchemy
@@ -12,6 +12,17 @@ class CRUDView(MethodView):
 
     # define these, please
     model: Model
+
+    _decorators: Dict[str, Collection[Callable]] = {}
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        for method_name, decorators in cls._decorators.items():
+            if not hasattr(cls, method_name):
+                continue
+            for decorator in decorators:
+                method = getattr(cls, method_name)
+                setattr(cls, method_name, decorator(method))
 
     def query(self) -> BaseQuery:
         return self._get_model().query
