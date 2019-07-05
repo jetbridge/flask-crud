@@ -62,7 +62,7 @@ class PetCollection(CollectionView):
     create_enabled = True
     list_enabled = True
 
-    _decorators = dict(
+    crud_decorators = dict(
         post=[
             pet_blp.arguments(PetSchema),
             pet_blp.response(PetSchema),
@@ -90,7 +90,7 @@ class PetResource(ResourceView):
     delete_enabled = True
 
     # get_decorators = [pet_blp.response(PetSchema)]
-    _decorators = dict(
+    crud_decorators = dict(
         get=[pet_blp.response(PetSchema)],
         patch=[
             pet_blp.arguments(PetSchema),
@@ -112,7 +112,7 @@ class HumanCollection(CollectionView):
 class HumanResource(ResourceView):
     model = Human
 
-    _decorators = dict(
+    crud_decorators = dict(
         get=[human_blp.response(HumanSchema)],
     )
 

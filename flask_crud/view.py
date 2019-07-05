@@ -13,11 +13,11 @@ class CRUDView(MethodView):
     # define these, please
     model: Model
 
-    _decorators: Dict[str, Collection[Callable]] = {}
+    crud_decorators: Dict[str, Collection[Callable]] = {}
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        for method_name, decorators in cls._decorators.items():
+        for method_name, decorators in cls.crud_decorators.items():
             if not hasattr(cls, method_name):
                 continue
             for decorator in decorators:
