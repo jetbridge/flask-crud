@@ -1,9 +1,11 @@
-from typing import Iterable, Dict, Callable, Collection
+from functools import reduce
+from typing import Iterable, Dict, Callable, Sequence
+
 from flask.views import MethodView
 from flask_rest_api import abort
 from flask_sqlalchemy import BaseQuery, Model, SQLAlchemy
 from sqlalchemy.orm import RelationshipProperty, joinedload
-from functools import reduce
+
 from flask_crud import _crud
 
 
@@ -13,14 +15,14 @@ class CRUDView(MethodView):
     # define these, please
     model: Model
 
-    crud_decorators: Dict[str, Collection[Callable]] = {}
+    crud_decorators: Dict[str, Sequence[Callable]] = {}
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         for method_name, decorators in cls.crud_decorators.items():
             if not hasattr(cls, method_name):
                 continue
-            for decorator in decorators:
+            for decorator in reversed(decorators):
                 method = getattr(cls, method_name)
                 setattr(cls, method_name, decorator(method))
 
