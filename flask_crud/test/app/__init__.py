@@ -34,6 +34,7 @@ def create_app() -> Flask:
     app.register_blueprint(pet_blp)
     app.register_blueprint(human_blp)
     app.register_blueprint(pointless_blp)
+    api.register_blueprint(car_blp)
 
     return app
 
@@ -172,3 +173,23 @@ def is_rel_loaded(item, attr_name):
     ins = inspect(item)
     # not unloaded aka loaded aka chill
     return attr_name not in ins.unloaded
+
+
+class CarSchema(Schema):
+    id = f.Integer()
+    owner_id = f.Integer()
+
+
+car_blp = Blueprint("car", "car", url_prefix="/car")
+
+
+@car_blp.route("")
+class CarCollection(CollectionView):
+    model = Car
+
+    list_enabled = True
+    access_checks_enabled = False
+
+    @car_blp.response(CarSchema)
+    def get(self):
+        return super().get()

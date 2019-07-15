@@ -110,7 +110,10 @@ class CollectionView(CRUDView):
         if not self.list_enabled:
             abort(405)
 
-        query = self.query_for_user()
+        if self._access_checks_enabled():
+            query = self.query_for_user()
+        else:
+            query = self.query()
 
         query = self._add_prefetch(query)
 
