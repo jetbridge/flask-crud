@@ -25,7 +25,13 @@ class CRUDView(MethodView):
     def query_for_user(self) -> BaseQuery:
         model_cls = self._get_model()
         if not hasattr(model_cls, 'query_for_user'):
-            raise NotImplementedError(f"{model_cls} does not implement query_for_user() and access control checks are enabled")
+            if self._access_checks_enabled():
+                raise NotImplementedError(
+                    f"{model_cls} does not implement query_for_user()"
+                    f" and access control checks are enabled"
+                )
+            else:
+                return self.query()
 
         user = self._get_current_user()
         # XXX: do we require user?

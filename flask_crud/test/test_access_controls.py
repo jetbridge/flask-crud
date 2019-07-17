@@ -16,3 +16,8 @@ def test_update(client: FlaskClient, pets):
     assert res.status_code == 200
     pet = res.json
     assert pet["species"] == "Canis"
+
+
+def test_unchecked_collection_can_be_accessed(client: FlaskClient):
+    res = client.get("/car")
+    assert res.status_code == 200
