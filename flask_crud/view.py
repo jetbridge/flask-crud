@@ -158,6 +158,11 @@ class CollectionView(CRUDView):
         return query
 
 
+class CustomDeletable:
+    def perform_custom_deletion(self):
+        pass
+
+
 class ResourceView(CRUDView):
     get_enabled: bool = False
     update_enabled: bool = False
@@ -198,7 +203,10 @@ class ResourceView(CRUDView):
         item = self._lookup(pk)
         self._check_can_write(item)
 
-        self._db.session.delete(item)
+        if isinstance(item, CustomDeletable):
+            item.perform_custom_deletion()
+        else:
+            self._db.session.delete(item)
         self._db.session.commit()
 
 

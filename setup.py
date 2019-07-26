@@ -5,7 +5,7 @@ with open("README.md") as f:
 
 NAME = "flask_crud"
 DESCRIPTION = "Reusable CRUD endpoints using flask-rest-api."
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 REQUIRES_PYTHON = ">=3.6.0"
 
 setup(
